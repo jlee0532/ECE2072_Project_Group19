@@ -30,9 +30,46 @@ module tick_FSM(rst, clk, enable, tick);
 	 */
 
 	// TODO: Declare inputs and outputs
+	input rst;
+	input clk;
+	input enable;
+	output [3:0] tick;
 	
-    // TODO: implement FSM
+	reg [3:0] cur_state;
+	reg [3:0] next_state;
+	
+	// TODO: implement FSM
+	always @(posedge clk) begin
+		if (rst == 1) begin
+			cur_state <= 4'b0001;
+		end
+		else begin
+			cur_state <= next_state;
+		end
+	end
+	
+	always @(*) begin
+		if (enable == 1) begin
+			case(cur_state)
+				4'b0001: next_state = 4'b0010;
+				4'b0010: next_state = 4'b0100;
+				4'b0100: next_state = 4'b1000;
+				4'b1000: next_state = 4'b0001;
+				default: begin
+					next_state = 4'b0001;
+				end
+			endcase
+		end
+		else if (enable == 0) begin
+			next_state = cur_state;
+		end
+	end
+	
+	assign tick = cur_state;
+	
 endmodule
+
+
 
 module multiplexer(SignExtDin, R0, R1, R2, R3, R4, R5, R6, R7, G, sel, Bus);
 	/* 
