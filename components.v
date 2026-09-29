@@ -50,7 +50,7 @@ module tick_FSM(rst, clk, enable, tick);
 	
 	always @(*) begin
 		if (enable == 1) begin
-			case(cur_state)
+			case (cur_state)
 				4'b0001: next_state = 4'b0010;
 				4'b0010: next_state = 4'b0100;
 				4'b0100: next_state = 4'b1000;
@@ -75,12 +75,37 @@ module multiplexer(SignExtDin, R0, R1, R2, R3, R4, R5, R6, R7, G, sel, Bus);
 	/* 
 	 * This module takes 10 inputs and places the correct input onto the bus.
 	 */
+	 
 	// TODO: Declare inputs and outputs
+	input [15:0] R0, R1, R2, R3, R4, R5, R6, R7;
+	input [15:0] G;
+	input [15:0] SignExtDin;
+	input [3:0] sel;
+	output reg [15:0] Bus;
 	
 	// TODO: implement logic
-
-
+	always @(*) begin
+		case (sel)
+			4'b0000: Bus = SignExtDin;
+			4'b0001: Bus = R0;
+			4'b0010: Bus = R1;
+			4'b0011: Bus = R2;
+			4'b0100: Bus = R3;
+			4'b0101: Bus = R4;
+			4'b0110: Bus = R5;
+			4'b0111: Bus = R6;
+			4'b1000: Bus = R7;
+			4'b1001: Bus = G;
+			default: begin
+				Bus = 1'd0;
+			end
+		endcase
+	end
+	
 endmodule
+
+
+
 
 module ALU (input_a, input_b, alu_op, result);
 	/* 
@@ -97,7 +122,7 @@ module ALU (input_a, input_b, alu_op, result);
 	
 	// TODO: Implement ALU Logic:
 	always @(*) begin
-		case(alu_op) 
+		case (alu_op) 
 			3'b000: result = input_a * input_b;
 			3'b001: result = input_a + input_b;
 			3'b010: result = input_a - input_b;
