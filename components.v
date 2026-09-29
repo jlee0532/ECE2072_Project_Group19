@@ -3,16 +3,22 @@ Monash University ECE2072: Assignment
 This file contains Verilog code to implement individual components to be used in 
     the CPU.
 
-Please enter your name and student ID:
+Please enter your name and student ID: Jerome Lee Cheng Zhe (36538310) 
+													Lee Ze Hon (36303968)
 
 */
 module sign_extend(in, ext);
 	/* 
 	 * This module sign extends the 9-bit Din to a 16-bit output.
 	 */
+	 
 	// TODO: Declare inputs and outputs
+	input [8:0] in;
+	output [15:0] ext;
 	
 	// TODO: implement logic
+	assign ext = {in[8], in[8], in[8], in[8], in[8], in[8], in[8], in};
+	
 endmodule
 
 
