@@ -106,7 +106,7 @@ module simple_proc(clk, rst, din, bus, R0, R1, R2, R3, R4, R5, R6, R7);
 					end
 					
 					3'b010: begin // addi Rx, Immi
-						bus_control = 4'b0001 + Rx;
+						bus_control = 4'b0000;
 					
 						A_in = 1;
 					end
@@ -151,7 +151,7 @@ module simple_proc(clk, rst, din, bus, R0, R1, R2, R3, R4, R5, R6, R7);
 					end
 					
 					3'b010: begin // addi Rx, Immi
-						bus_control = 4'b0000;
+						bus_control = 4'b0001 + Rx;
 						
 						ALU_op = 3'b001;
 						
