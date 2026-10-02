@@ -132,7 +132,8 @@ module simple_proc(clk, rst, din, bus, R0, R1, R2, R3, R4, R5, R6, R7);
 						endcase
 					end
 					
-					default: 
+					default: begin
+					end
 					
 				endcase
 			end
@@ -165,8 +166,11 @@ module simple_proc(clk, rst, din, bus, R0, R1, R2, R3, R4, R5, R6, R7);
 						G_in = 1;
 					end
 					
-					3'b111: // movi Rx, Immi 
-					default:
+					3'b111: begin// movi Rx, Immi
+					end
+					
+					default:begin 
+					end
 				endcase
 			end
 

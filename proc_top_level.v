@@ -11,7 +11,7 @@ module proc_top_level(
 							.rst(~KEY[0]), 
 							.din(SW[8:0]), 
 							.bus(bus), 
-							R0, R1, R2, R3, R4, R5, R6, R7);
+							.R0(), .R1(), .R2(), .R3(), .R4(), .R5(), .R6(), .R7());
 
 	assign LEDR[9:0] = bus[9:0];
 
