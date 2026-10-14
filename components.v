@@ -35,11 +35,11 @@ module tick_FSM(rst, clk, enable, tick);
 	input enable;
 	output [3:0] tick;
 	
-	reg [3:0] cur_state;
+	(* syn_encoding = "safe" *) reg [3:0] cur_state;
 	reg [3:0] next_state;
 	
 	// TODO: implement FSM
-	always @(posedge clk) begin
+	always @(posedge clk) begin  
 		if (rst == 1) begin
 			cur_state <= 4'b0001;
 		end
@@ -60,7 +60,7 @@ module tick_FSM(rst, clk, enable, tick);
 				end
 			endcase
 		end
-		else if (enable == 0) begin
+		else begin
 			next_state = cur_state;
 		end
 	end
@@ -71,7 +71,7 @@ endmodule
 
 
 
-module multiplexer(SignExtDin, R0, R1, R2, R3, R4, R5, R6, R7, G, sel, Bus);
+module multiplexer(SignExtDin, R0, R1, R2, R3, R4, R5, R6, R7, G, PC, sel, Bus);
 	/* 
 	 * This module takes 10 inputs and places the correct input onto the bus.
 	 */
@@ -80,6 +80,7 @@ module multiplexer(SignExtDin, R0, R1, R2, R3, R4, R5, R6, R7, G, sel, Bus);
 	input [15:0] R0, R1, R2, R3, R4, R5, R6, R7;
 	input [15:0] G;
 	input [15:0] SignExtDin;
+	input [15:0] PC;
 	input [3:0] sel;
 	output reg [15:0] Bus;
 	
@@ -96,6 +97,7 @@ module multiplexer(SignExtDin, R0, R1, R2, R3, R4, R5, R6, R7, G, sel, Bus);
 			4'b0111: Bus = R6;
 			4'b1000: Bus = R7;
 			4'b1001: Bus = G;
+			4'b1010: Bus = PC;
 			default: begin
 				Bus = 1'd0;
 			end
@@ -122,6 +124,7 @@ module ALU (input_a, input_b, alu_op, result);
 	
 	// TODO: Implement ALU Logic:
 	always @(*) begin
+		temp_a = 16'd0;
 		case (alu_op) 
 			3'b000: result = input_a * input_b;
 			3'b001: result = input_a + input_b;
@@ -135,6 +138,7 @@ module ALU (input_a, input_b, alu_op, result);
 					result = input_b >> temp_a;
 				end
 			end
+			3'b100: result = (input_a << 1) + input_b;  // NEW: bez target = (imm × 2) + PC
 			default: begin 
 				result = 1'd0;
 			end
@@ -177,6 +181,43 @@ module register_n(data_in, r_in, clk, Q, rst);
 			end 
 		end
 	end
+endmodule
 	
+module pc_register(data_in, pc_load, clk, rst, pc_in, Q);
+
+	input clk, rst, pc_in, pc_load;
+	input [15:0] data_in;
+	output reg [15:0] Q;
+
+	always @(posedge clk) begin
+		if (rst == 1) begin
+			// TODO: what address does the first instruction live at?
+			Q <= 16'd0;
+		end
+		else if (pc_load == 1) begin
+			Q <= data_in;
+		end
+		else if (pc_in == 1) begin
+			// TODO: move to the next word
+			Q <= Q + 16'd1;
+		end
+	end
 endmodule
 
+module clock_divider(clk_in, clk_out);
+	input clk_in;                 // CLOCK_50
+	output reg clk_out = 0;  
+	parameter N = 2500000;	// 10 Hz
+
+	reg [21:0] count = 0;
+
+	always @(posedge clk_in) begin
+		if (count == N - 1) begin   // TODO: N - 1
+			count <= 0;
+			clk_out <= ~clk_out;       // TODO: flip it
+		end
+		else begin
+			count <= count + 1;         // TODO: keep counting
+		end
+	end
+endmodule
